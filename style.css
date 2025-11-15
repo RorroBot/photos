@@ -1,0 +1,214 @@
+/*
+  STYLES
+  - This block contains reset rules, layout and lightbox styles.
+  - If you plan to scale this project, move CSS into a separate .css file and
+    consider using CSS variables (custom properties) for colors, spacing,
+    and breakpoints.*/
+
+
+/* ---------------------- Reset and base styles ---------------------- */
+/* Reset common element spacing and set box-sizing to border-box so padding
+   behaves predictably. Change with caution — global resets affect all
+   components. */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+/* Base typography and background. If you change the font, choose a
+   web-safe backup and consider font-display for performance. */
+body {
+    font-family: 'Helvetica Neue', Helvetica, sans-serif; /* CHANGE/ADJUST: Swap fonts here */
+    background-color: #ffffff; /* CHANGE/ADJUST: Use a CSS variable to theme */
+    color: #333;
+    overflow-x: hidden; /* Prevent horizontal scroll caused by transforms */
+    /* Hide scrollbar (non-standard) to give a clean look. Note: this
+       hides the scrollbar visually and can reduce discoverability on
+       desktop. You may want to remove for accessibility. */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+}
+body::-webkit-scrollbar {
+    display: none; /* WebKit-based browsers */
+}
+/* ---------------------- Main container ---------------------- */
+.container {
+    max-width: 1400px; /* CHANGE/ADJUST: Change layout width here */
+    margin: 0 auto;
+    padding: 80px 40px; /* CHANGE/ADJUST: Controls page padding */
+}
+/* ---------------------- Grid layout ---------------------- */
+/* The grid uses 5 columns by default. To change column counts, prefer
+   modifying the `grid-template-columns` values and the corresponding
+   responsive breakpoints below. */
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* CHANGE/ADJUST: Default columns */
+    gap: 15px;
+    margin-bottom: 40px;
+}
+/* Responsive breakpoints -- these mirror JS's logic used at init/resize.
+   Keep CSS and JS breakpoints in sync if you edit either. */
+@media (max-width: 1024px) {
+    .photo-grid {
+        grid-template-columns: repeat(3, 1fr); /* Tablet / small desktop */
+    }
+}
+@media (max-width: 768px) {
+    .photo-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+}
+@media (max-width: 480px) {
+    .photo-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px; /* CHANGE/ADJUST: Tighter gaps for small screens */
+    }
+}
+/* ---------------------- Grid items ---------------------- */
+/* Keep grid items square using aspect-ratio. If you need support for
+   older browsers, replace with padding-top trick or fixed heights. */
+.grid-item {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 1 / 1; /* Keeps thumbnails square */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer;
+    opacity: 0; /* Initially hidden for the fade-in animation */
+    transition: opacity 0.5s ease; /* Adjust duration if you want faster/ slower reveals */
+    background-color: #f5f5f5; /* Placeholder color while image loads */
+}
+.grid-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Crops to fill the square */
+    transition: transform 0.3s ease; /* Hover zoom effect */
+}
+/* Simple hover transform. On touch devices this won't trigger; that's ok. */
+.grid-item:hover img {
+    transform: scale(1.05);
+}
+/* ---------------------- Copyright / footer ---------------------- */
+.copyright {
+    text-align: center;
+    padding: 20px 0;
+    font-size: 14px;
+    color: #888;
+}
+/* ---------------------- Lightbox styles ---------------------- */
+/* The lightbox starts hidden (display: none) and becomes visible by
+   toggling the `active` class. There is also a `dark` state which
+   applies different background and text colors. */
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff; /* State 1 background */
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.5s ease, background-color 0.5s ease;
+}
+/* Activate the lightbox: set display and fully opaque. We keep both
+   properties so transitions animate smoothly. */
+.lightbox.active {
+    display: flex;
+    opacity: 1;
+}
+/* Alternate visual state for the lightbox (dark mode). Toggled via
+   JS `toggleLightboxState()`. */
+.lightbox.dark {
+    background-color: #333333;
+}
+.lightbox-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.lightbox-image {
+    max-width: 100%;
+    max-height: 80vh; /* Ensures it never overflows the viewport vertically */
+    object-fit: contain; /* Do not crop the full-size image */
+    opacity: 0; /* Fades in once the full image finishes loading */
+    transition: opacity 0.5s ease;
+}
+.lightbox-caption {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: transparent; /* Keep caption background transparent by default */
+    color: #333; /* CHANGE/ADJUST: Use variable for themeable text color */
+    text-align: center;
+    font-size: 16px;
+    opacity: 0; /* Fades in after the image */
+    transition: opacity 0.5s ease, color 0.5s ease;
+}
+/* When in dark state, caption text should be white for contrast. */
+.lightbox.dark .lightbox-caption {
+    color: #ffffff;
+}
+/* ---------------------- Navigation buttons ---------------------- */
+.lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    pointer-events: none; /* Let the nav area be non-blocking; buttons enable pointer-events */
+}
+.nav-btn {
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 36px;
+    cursor: pointer;
+    pointer-events: auto; /* Buttons accept clicks */
+    transition: color 0.3s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.lightbox.dark .nav-btn {
+    color: #ffffff;
+}
+.nav-btn:hover {
+    opacity: 0.7;
+}
+/* On narrow screens we hide these because users rely on swipe and
+   on-screen controls may obstruct the image. Keep in sync with JS
+   expectations (JS does not rely on these buttons being present). */
+@media (max-width: 768px) {
+    .lightbox-nav {
+        display: none;
+    }
+}
+/* Close button in the corner of the lightbox. */
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 30px;
+    color: #333;
+    cursor: pointer;
+    z-index: 1001; /* Sit above the lightbox content */
+    transition: color 0.3s ease;
+}
+.lightbox.dark .close-btn {
+    color: #ffffff;
+}
+.close-btn:hover {
+    opacity: 0.7;
+}
