@@ -402,7 +402,7 @@ window.addEventListener('resize', () => {
     });
 
     // Reload images with new column count
-    loadImagesByRow(columns);
+    //loadImagesByRow(columns);
 });
 
 /*
@@ -424,3 +424,4 @@ window.addEventListener('resize', () => {
   - For very large galleries, implement pagination or infinite scroll
     with lazy-loading rows using IntersectionObserver.
 */
+
