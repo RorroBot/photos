@@ -181,17 +181,20 @@ function loadImagesByRow(columns) {
         // Preload images in this row and wait for them to either load or error.
         const promises = [];
         for (let i = startIndex; i < endIndex; i++) {
-            const img = gridItems[i].querySelector('img');
-            if (!img) continue;
+    const img = gridItems[i].querySelector('img');
+    if (!img) continue;
 
-            // 🔥 Handle cached images immediately
-            if (img.complete) continue;
+    // 🔥 Handle cached images immediately
+    if (img.complete) {
+        promises.push(Promise.resolve());
+        continue;
+    }
 
-            // Otherwise wait for load/error events
-            promises.push(new Promise(resolve => {
-                img.onload = resolve;
-                img.onerror = resolve;
-            }));
+    // Otherwise wait for load/error events
+    promises.push(new Promise(resolve => {
+        img.onload = resolve;
+        img.onerror = resolve;
+    }));
 }
 
         // After all promises resolve, fade in these items and queue next row.
@@ -402,7 +405,7 @@ window.addEventListener('resize', () => {
     });
 
     // Reload images with new column count
-    //loadImagesByRow(columns);
+    loadImagesByRow(columns);
 });
 
 /*
@@ -424,4 +427,3 @@ window.addEventListener('resize', () => {
   - For very large galleries, implement pagination or infinite scroll
     with lazy-loading rows using IntersectionObserver.
 */
-
